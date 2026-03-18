@@ -3,806 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNIS KEY — The Agent OS</title>
+    <title>OMNIS KEY — Intelligent Agent Runtime</title>
+    <meta name="description" content="OMNIS KEY is OpenClaw enhanced with COSMIC probabilistic reasoning and HEIMDALL trust verification. Install it, run it, deploy intelligent agents.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --white: #FFFFFF;
-            --off-white: #FAFAFA;
-            --near-black: #0A0A0A;
-            --secondary-text: #555555;
-            --cosmic-blue: #0070F3;
-            --cosmic-blue-dark: #004EC2;
-            --cosmic-blue-glow: rgba(0, 112, 243, 0.15);
-            --code-bg: #F0F4FF;
-            --border-color: #E5E5E5;
+            --bg: #050508;
+            --surface: #0a0c14;
+            --surface-2: #0f1220;
+            --border: #1a1f3a;
+            --border-light: #252b48;
+            --text: #e0e0e0;
+            --text-dim: #666;
+            --text-muted: #444;
+            --accent: #4ff8ff;
+            --accent-dim: rgba(79, 248, 255, 0.08);
+            --accent-glow: rgba(79, 248, 255, 0.15);
+            --purple: #a855f7;
+            --purple-dim: rgba(168, 85, 247, 0.08);
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--white);
-            color: var(--near-black);
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
         code, pre, .mono {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        ::selection { background: rgba(79, 248, 255, 0.2); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-        @keyframes glow-pulse {
-            0%, 100% {
-                text-shadow: 0 0 20px rgba(0, 112, 243, 0.3);
-            }
-            50% {
-                text-shadow: 0 0 30px rgba(0, 112, 243, 0.5);
-            }
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 2rem; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
         }
-
-        @keyframes circuit-flow {
-            0% {
-                stroke-dashoffset: 1000;
-            }
-            100% {
-                stroke-dashoffset: 0;
-            }
+        .nav-logo {
+            font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em;
+            color: var(--accent); text-decoration: none;
         }
-
-        @keyframes node-pulse {
-            0%, 100% {
-                box-shadow: 0 0 20px var(--cosmic-blue-glow), 0 0 40px var(--cosmic-blue-glow);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(0, 112, 243, 0.3), 0 0 60px rgba(0, 112, 243, 0.2);
-            }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a {
+            font-size: 0.8rem; color: var(--text-dim); text-decoration: none;
+            font-weight: 500; letter-spacing: 0.03em; transition: color 0.2s;
         }
+        .nav-links a:hover { color: var(--text); }
 
-        .fade-in {
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        .fade-in.visible {
-            animation-play-state: running;
-        }
-
-        /* Hero Section */
+        /* ─── HERO ─── */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            background: var(--white);
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 6rem 2rem 4rem;
+            position: relative; max-width: 1100px; margin: 0 auto;
         }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.35rem 0.85rem; border: 1px solid var(--border);
+            border-radius: 20px; font-size: 0.7rem; color: var(--text-dim);
+            margin-bottom: 2rem; width: fit-content;
+            letter-spacing: 0.05em; font-weight: 500;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+            animation: pulse 2s ease infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         .hero h1 {
-            font-size: clamp(3.5rem, 10vw, 7rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            letter-spacing: -0.03em;
-            color: var(--near-black);
+            font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 700;
+            letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.5rem;
         }
-
-        .hero .tagline {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--text-dim);
+            max-width: 640px; line-height: 1.7; margin-bottom: 2.5rem;
             font-weight: 300;
-            margin-bottom: 1.5rem;
-            color: var(--cosmic-blue);
-            animation: glow-pulse 3s ease-in-out infinite;
         }
+        .hero-sub strong { color: var(--text); font-weight: 500; }
 
-        .hero .subtitle {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--secondary-text);
-            margin-bottom: 3rem;
-            max-width: 700px;
-            line-height: 1.7;
+        .hero-install {
+            display: flex; align-items: center; gap: 1rem;
+            flex-wrap: wrap; margin-bottom: 2rem;
         }
-
-        .install-command {
-            background: var(--code-bg);
-            border: 2px solid var(--cosmic-blue);
-            padding: 1.5rem 2.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            display: inline-block;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s;
+        .install-box {
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 0.85rem 1.5rem; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s; position: relative;
         }
-
-        .install-command:hover {
-            box-shadow: 0 0 30px var(--cosmic-blue-glow);
-            transform: translateY(-2px);
+        .install-box:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
+        .install-box code { font-size: 0.95rem; color: var(--accent); font-weight: 600; }
+        .install-box .copy-hint {
+            position: absolute; top: -22px; right: 8px;
+            font-size: 0.65rem; color: var(--text-muted); opacity: 0; transition: opacity 0.2s;
+        }
+        .install-box:hover .copy-hint { opacity: 1; }
 
-        .install-command code {
-            font-size: 1.1rem;
-            color: var(--cosmic-blue);
-            user-select: all;
+        .hero-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .hero-links a {
+            font-size: 0.85rem; color: var(--text-dim); text-decoration: none;
+            padding: 0.6rem 1.2rem; border: 1px solid var(--border); border-radius: 6px;
+            font-weight: 500; transition: all 0.2s; letter-spacing: 0.02em;
+        }
+        .hero-links a:hover { color: var(--text); border-color: var(--border-light); }
+        .hero-links a.primary {
+            background: var(--accent); color: var(--bg); border-color: var(--accent);
             font-weight: 600;
         }
+        .hero-links a.primary:hover { opacity: 0.9; }
 
-        .install-command::after {
-            content: 'Click to copy';
-            position: absolute;
-            top: -30px;
-            right: 0;
-            font-size: 0.75rem;
-            color: var(--secondary-text);
-            opacity: 0;
-            transition: opacity 0.3s;
+        /* ─── SECTIONS ─── */
+        section { padding: 6rem 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em;
+            color: var(--accent); margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700;
+            letter-spacing: -0.03em; margin-bottom: 1rem;
+        }
+        .section-desc {
+            font-size: 1.05rem; color: var(--text-dim); max-width: 600px;
+            line-height: 1.7; margin-bottom: 3rem;
         }
 
-        .install-command:hover::after {
-            opacity: 1;
+        /* ─── WHAT IS IT ─── */
+        .equation {
+            display: flex; align-items: center; gap: 1.5rem;
+            flex-wrap: wrap; margin-bottom: 3rem;
+            padding: 2rem; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .eq-term {
+            font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em;
+        }
+        .eq-term .label { font-size: 0.65rem; color: var(--text-muted); display: block; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .eq-term.accent { color: var(--accent); }
+        .eq-term.purple { color: var(--purple); }
+        .eq-term.green { color: var(--green); }
+        .eq-op { font-size: 1.5rem; color: var(--text-muted); font-weight: 300; }
+
+        /* ─── THREE COLUMNS ─── */
+        .three-col {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px; background: var(--border); border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
+        }
+        .col-card {
+            background: var(--surface); padding: 2rem;
+        }
+        .col-card h3 {
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .col-card h3 .tag {
+            font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 3px;
+            font-weight: 600; letter-spacing: 0.05em;
+        }
+        .col-card h3 .tag.cyan { background: var(--accent-dim); color: var(--accent); }
+        .col-card h3 .tag.purple { background: var(--purple-dim); color: var(--purple); }
+        .col-card h3 .tag.green { background: rgba(34, 197, 94, 0.08); color: var(--green); }
+        .col-card p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.7; }
+
+        /* ─── PIPELINE ─── */
+        .pipeline-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .pipeline-flow {
+            display: flex; align-items: center; gap: 0.5rem;
+            overflow-x: auto; padding: 1rem 0; margin-bottom: 1.5rem;
+            -webkit-overflow-scrolling: touch;
+        }
+        .pipeline-flow::-webkit-scrollbar { height: 4px; }
+        .pipeline-flow::-webkit-scrollbar-thumb { background: var(--border); }
+        .p-node {
+            padding: 0.5rem 1rem; background: var(--surface-2); border: 1px solid var(--border);
+            border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+            white-space: nowrap; letter-spacing: 0.05em;
+            transition: all 0.3s; cursor: default; flex-shrink: 0;
+        }
+        .p-node:hover { border-color: var(--accent); color: var(--accent); }
+        .p-arrow { color: var(--text-muted); font-size: 0.8rem; flex-shrink: 0; }
+        .pipeline-desc {
+            font-size: 0.9rem; color: var(--text-dim); line-height: 1.7; max-width: 700px;
         }
 
-        .install-command.copied::after {
-            content: 'Copied!';
-            opacity: 1;
-            color: var(--cosmic-blue);
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border: 2px solid var(--cosmic-blue);
-            background: transparent;
-            color: var(--cosmic-blue);
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 8px;
-        }
-
-        .btn:hover {
-            background: var(--off-white);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--cosmic-blue-glow);
-        }
-
-        .btn-primary {
-            background: var(--cosmic-blue);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: var(--cosmic-blue-dark);
-            border-color: var(--cosmic-blue-dark);
-        }
-
-        /* Section Styles */
-        section {
-            padding: 6rem 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 800;
-            margin-bottom: 3rem;
-            text-align: center;
-            letter-spacing: -0.02em;
-            color: var(--near-black);
-        }
-
-        /* What It Is Section */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 2.5rem;
-            background: var(--white);
-            border: 2px solid var(--cosmic-blue);
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px var(--cosmic-blue-glow);
-        }
-
-        .feature-icon {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--near-black);
-            font-weight: 700;
-        }
-
-        .feature-card p {
-            color: var(--secondary-text);
-            line-height: 1.8;
-        }
-
-        /* The Stack Section */
-        .stack {
-            background: var(--off-white);
-        }
-
-        .pipeline-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            background: var(--white);
-            border-radius: 16px;
-            border: 2px solid var(--cosmic-blue);
-            position: relative;
-        }
-
-        .pipeline {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3rem;
-            font-family: monospace;
-        }
-
-        .pipeline-node {
-            padding: 2rem 3rem;
-            background: var(--white);
-            border: 3px solid var(--cosmic-blue);
-            border-radius: 50%;
-            font-weight: 700;
-            color: var(--cosmic-blue);
-            font-size: 1.3rem;
-            position: relative;
-            z-index: 2;
-            min-width: 180px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .pipeline-node:hover {
-            box-shadow: 0 0 30px var(--cosmic-blue-glow);
-        }
-
-        .pipeline-node.center {
-            font-size: 1.6rem;
-            min-width: 220px;
-            animation: node-pulse 3s ease-in-out infinite;
-        }
-
-        .pipeline-connector {
-            width: 3px;
-            height: 60px;
-            background: var(--cosmic-blue);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pipeline-connector::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            animation: flow-down 2s linear infinite;
-        }
-
-        @keyframes flow-down {
-            0% {
-                transform: translateY(-20px);
-            }
-            100% {
-                transform: translateY(80px);
-            }
-        }
-
-        .pipeline-outputs {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .pipeline-output {
-            padding: 1rem 2rem;
-            background: var(--code-bg);
-            border: 2px solid var(--cosmic-blue);
-            border-radius: 8px;
-            color: var(--cosmic-blue);
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        .pipeline-output:hover {
-            box-shadow: 0 4px 12px var(--cosmic-blue-glow);
-            transform: translateY(-2px);
-        }
-
-        .stack-description {
-            text-align: center;
-            margin-top: 3rem;
-            color: var(--secondary-text);
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
-        }
-
-        /* Constellations Section */
+        /* ─── CONSTELLATIONS ─── */
         .constellation-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1px; background: var(--border); border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
         }
-
-        .constellation-card {
-            background: var(--white);
-            border: 2px solid transparent;
-            border-top: 4px solid var(--cosmic-blue);
-            border-radius: 8px;
-            padding: 2rem;
-            transition: all 0.3s;
-            cursor: pointer;
+        .c-card {
+            background: var(--surface); padding: 1.5rem;
         }
-
-        .constellation-card:hover {
-            border: 2px solid var(--cosmic-blue);
-            border-top: 4px solid var(--cosmic-blue);
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px var(--cosmic-blue-glow);
+        .c-card h3 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem;
         }
-
-        .constellation-card h3 {
-            font-size: 1.6rem;
-            color: var(--cosmic-blue);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
+        .c-card .c-domain {
+            font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.1em; font-weight: 600; margin-bottom: 0.75rem;
         }
-
-        .constellation-card .domain {
-            color: var(--secondary-text);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 600;
+        .c-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+        .c-status {
+            display: inline-block; margin-top: 0.75rem;
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em;
+            text-transform: uppercase; padding: 0.2rem 0.5rem;
+            border-radius: 3px;
         }
+        .c-status.live { background: rgba(34,197,94,0.1); color: var(--green); }
+        .c-status.soon { background: rgba(245,158,11,0.1); color: var(--amber); }
 
-        .constellation-card p {
-            color: var(--secondary-text);
-            line-height: 1.8;
-        }
-
-        .constellation-badge {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--code-bg);
-            color: var(--cosmic-blue);
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Install Section */
-        .install-section {
-            background: var(--code-bg);
-        }
-
+        /* ─── TERMINAL ─── */
+        .terminal-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .terminal {
-            background: var(--white);
-            border: 2px solid var(--cosmic-blue);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 700px;
-            margin: 0 auto;
-            box-shadow: 0 8px 30px var(--cosmic-blue-glow);
+            background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+            max-width: 680px; overflow: hidden;
         }
-
-        .terminal-header {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+        .terminal-bar {
+            display: flex; gap: 6px; padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
         }
-
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--border-color);
-        }
-
+        .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
         .terminal-dot:nth-child(1) { background: #ff5f56; }
         .terminal-dot:nth-child(2) { background: #ffbd2e; }
         .terminal-dot:nth-child(3) { background: #27c93f; }
+        .terminal-body { padding: 1.5rem; }
+        .terminal-line { display: flex; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .terminal-prompt { color: var(--accent); font-weight: 600; user-select: none; }
+        .terminal-cmd { color: var(--text); font-weight: 500; }
+        .terminal-comment { color: var(--text-muted); font-size: 0.8rem; margin-top: 1rem; }
+        .terminal-output { color: var(--green); font-size: 0.85rem; margin: 0.75rem 0; padding-left: 1.75rem; }
 
-        .terminal-body {
-            font-family: monospace;
-            font-size: 1rem;
-            line-height: 2.2;
+        /* ─── ENGINES ─── */
+        .engine-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1px; background: var(--border); border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
+        }
+        .engine {
+            background: var(--surface); padding: 1.2rem; text-align: center;
+            transition: all 0.2s; cursor: default;
+        }
+        .engine:hover { background: var(--surface-2); }
+        .engine .name {
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
+            margin-bottom: 0.3rem;
+        }
+        .engine .role {
+            font-size: 0.65rem; color: var(--text-muted); line-height: 1.4;
         }
 
-        .terminal-line {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .terminal-prompt {
-            color: var(--cosmic-blue);
-            font-weight: 700;
-            user-select: none;
-        }
-
-        .terminal-command {
-            color: var(--cosmic-blue);
-            font-weight: 600;
-        }
-
-        .terminal-comment {
-            color: var(--secondary-text);
-            margin-top: 1.5rem;
-            font-style: italic;
-            font-size: 0.9rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 2rem 3rem;
-            text-align: center;
-            background: var(--white);
-            border-top: 1px solid var(--border-color);
-        }
-
-        footer p {
-            color: var(--secondary-text);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-
-        footer strong {
-            color: var(--cosmic-blue);
-            font-weight: 700;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--secondary-text);
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            color: var(--cosmic-blue);
-        }
-
-        /* Mission Section */
+        /* ─── MISSION ─── */
         .mission {
-            background: var(--white);
-            padding: 6rem 2rem;
-            text-align: center;
+            border-top: 1px solid var(--border); text-align: center;
+            padding: 8rem 2rem;
         }
-
-        .mission-quote {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            padding-left: 2rem;
-            border-left: 4px solid var(--cosmic-blue);
+        .mission blockquote {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 300;
+            line-height: 1.5; max-width: 800px; margin: 0 auto 1.5rem;
+            color: var(--text);
         }
-
-        .mission-quote blockquote {
-            font-size: 2.5rem;
-            font-weight: 300;
-            line-height: 1.5;
-            color: var(--near-black);
-            margin-bottom: 2rem;
-            text-shadow: 0 0 20px rgba(0, 112, 243, 0.2);
+        .mission .attribution {
+            font-size: 0.9rem; color: var(--text-muted); font-weight: 400;
         }
+        .mission .attribution strong { color: var(--accent); font-weight: 500; }
 
-        .mission-attribution {
-            font-size: 1.1rem;
-            color: var(--secondary-text);
-            font-weight: 500;
-            font-style: italic;
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 3rem 2rem; text-align: center;
+            border-top: 1px solid var(--border);
         }
+        footer p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; }
+        footer .links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        footer .links a {
+            font-size: 0.8rem; color: var(--text-dim); text-decoration: none;
+            font-weight: 500; transition: color 0.2s;
+        }
+        footer .links a:hover { color: var(--accent); }
 
-        /* Responsive */
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 768px) {
-            section {
-                padding: 4rem 1.5rem;
-            }
-
-            .pipeline-container {
-                padding: 2rem 1rem;
-            }
-
-            .pipeline-node {
-                min-width: 140px;
-                font-size: 1.1rem;
-            }
-
-            .pipeline-node.center {
-                font-size: 1.3rem;
-                min-width: 160px;
-            }
-
-            .terminal {
-                padding: 1.5rem;
-            }
-
-            .terminal-body {
-                font-size: 0.85rem;
-            }
+            nav { padding: 0 1rem; }
+            .hero { padding: 5rem 1.5rem 3rem; }
+            section { padding: 4rem 1.5rem; }
+            .equation { gap: 0.75rem; padding: 1.5rem; }
+            .eq-term { font-size: 1rem; }
+            .pipeline-flow { gap: 0.3rem; }
+            .p-node { font-size: 0.65rem; padding: 0.4rem 0.6rem; }
         }
+
+        /* ─── FADE IN ─── */
+        .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero fade-in visible">
-        <h1>OMNIS KEY</h1>
-        <div class="tagline">The Agent OS.</div>
-        <p class="subtitle">Local agent runtime. Runs on your machine. No cloud dependency. COSMIC reasoning substrate baked in from day one.</p>
 
-        <div class="install-command" onclick="copyToClipboard(this)">
+<nav>
+    <a href="#" class="nav-logo">OMNIS KEY</a>
+    <div class="nav-links">
+        <a href="#what">What</a>
+        <a href="#engines">Engines</a>
+        <a href="#constellations">Domains</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/sokpyeon/omnis-key-sdk" target="_blank">GitHub</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge"><span class="dot"></span> Open source · Local-first · No cloud dependency</div>
+    <h1>
+        <span class="gradient">OMNIS KEY</span><br>
+        Intelligent Agent Runtime.
+    </h1>
+    <p class="hero-sub">
+        <strong>OpenClaw</strong> enhanced with <strong>COSMIC</strong> probabilistic reasoning
+        and <strong>HEIMDALL</strong> trust verification. Install it. Run it. Deploy intelligent agents
+        that reason about what they're doing.
+    </p>
+    <div class="hero-install">
+        <div class="install-box" onclick="copyCmd(this)">
+            <span class="copy-hint">click to copy</span>
             <code>npm install -g omnis-key</code>
         </div>
+    </div>
+    <div class="hero-links">
+        <a href="#install" class="primary">Get Started →</a>
+        <a href="https://github.com/sokpyeon/omnis-key-sdk">View Source</a>
+        <a href="https://docs.omniskey.ai">Documentation</a>
+    </div>
+</section>
 
-        <div class="cta-group">
-            <a href="#install" class="btn btn-primary">Get Started</a>
-            <a href="https://github.com/jourdanlabs/omnis-key" class="btn" target="_blank">View on GitHub</a>
-        </div>
-    </section>
-
-    <!-- Mission Section -->
-    <section class="mission fade-in">
-        <div class="mission-quote">
-            <blockquote>
-                AI will bring about an age of prosperity the world has never seen before.
-            </blockquote>
-            <div class="mission-attribution">— Sokpyeon, Founder, JourdanLabs</div>
-        </div>
-    </section>
-
-    <!-- What It Is Section -->
-    <section id="what" class="fade-in">
-        <div class="container">
-            <h2>How It Works</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="8" y="8" width="48" height="48" stroke="#0070F3" stroke-width="2.5" fill="none"/>
-                        <path d="M32 20 L44 32 L32 44 L20 32 Z" stroke="#0070F3" stroke-width="2.5" fill="none"/>
-                        <circle cx="32" cy="32" r="4" fill="#0070F3"/>
-                    </svg>
-                    <h3>OMNIS KEY executes</h3>
-                    <p>Local agent runtime. Runs on your machine. No cloud dependency.</p>
-                </div>
-
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="32" cy="32" r="24" stroke="#0070F3" stroke-width="2.5" fill="none"/>
-                        <circle cx="32" cy="32" r="16" stroke="#0070F3" stroke-width="2" fill="none"/>
-                        <circle cx="32" cy="32" r="8" stroke="#0070F3" stroke-width="2" fill="none"/>
-                        <line x1="32" y1="8" x2="32" y2="56" stroke="#0070F3" stroke-width="1.5"/>
-                        <line x1="8" y1="32" x2="56" y2="32" stroke="#0070F3" stroke-width="1.5"/>
-                    </svg>
-                    <h3>COSMIC decides</h3>
-                    <p>Probabilistic reasoning engine. METEOR → NOVA → ECLIPSE → PULSAR → AURORA.</p>
-                </div>
-
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="12" y="12" width="40" height="40" stroke="#0070F3" stroke-width="2.5" fill="none"/>
-                        <path d="M20 32 L28 40 L44 24" stroke="#0070F3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <h3>HEIMDALL verifies</h3>
-                    <p>Trust + provenance on every output. SHA-256 attestation chain.</p>
-                </div>
+<!-- WHAT IS IT -->
+<section id="what" class="fade-in">
+    <div class="container">
+        <div class="section-label">What is it</div>
+        <h2 class="section-title">Three systems. One runtime.</h2>
+        <div class="equation">
+            <div class="eq-term accent">
+                <span class="label">Runtime</span>
+                OpenClaw
+            </div>
+            <span class="eq-op">+</span>
+            <div class="eq-term purple">
+                <span class="label">Intelligence</span>
+                COSMIC
+            </div>
+            <span class="eq-op">+</span>
+            <div class="eq-term green">
+                <span class="label">Trust</span>
+                HEIMDALL
+            </div>
+            <span class="eq-op">=</span>
+            <div class="eq-term" style="color: var(--text);">
+                <span class="label">Result</span>
+                OMNIS KEY
             </div>
         </div>
-    </section>
 
-    <!-- The Stack Section -->
-    <section id="stack" class="stack fade-in">
-        <div class="container">
-            <h2>The Stack</h2>
-            <div class="pipeline-container">
-                <div class="pipeline">
-                    <div class="pipeline-node">COSMIC</div>
-                    <div class="pipeline-connector"></div>
-                    <div class="pipeline-node center">OMNIS KEY</div>
-                    <div class="pipeline-connector"></div>
-                    <div class="pipeline-outputs">
-                        <div class="pipeline-output">COSMIC IDE</div>
-                        <div class="pipeline-output">LUNA</div>
-                        <div class="pipeline-output">Your Apps</div>
-                    </div>
-                </div>
+        <div class="three-col">
+            <div class="col-card">
+                <h3>OMNIS KEY executes <span class="tag cyan">RUNTIME</span></h3>
+                <p>Local agent runtime on your machine. Spawns agents, manages sessions, handles tools and channels. The execution layer everything runs on.</p>
             </div>
-            <p class="stack-description">
-                OMNIS KEY is infrastructure. Install it once, run it everywhere. COSMIC intelligence flows through it to power your entire agent ecosystem.
-            </p>
-        </div>
-    </section>
-
-    <!-- Constellations Section -->
-    <section id="constellations" class="fade-in">
-        <div class="container">
-            <h2>Constellations</h2>
-            <div class="constellation-grid">
-                <div class="constellation-card">
-                    <h3>POLARIS</h3>
-                    <div class="domain">Energy · Compression</div>
-                    <p>Renewable energy systems and data compression infrastructure powered by COSMIC optimization.</p>
-                    <span class="constellation-badge">Active</span>
-                </div>
-
-                <div class="constellation-card">
-                    <h3>SOLSTICE</h3>
-                    <div class="domain">Refinery · Logistics</div>
-                    <p>Industrial process control and supply chain coordination with probabilistic planning.</p>
-                    <span class="constellation-badge">Active</span>
-                </div>
-
-                <div class="constellation-card">
-                    <h3>GAIA</h3>
-                    <div class="domain">Food · Water</div>
-                    <p>Agricultural and water management systems optimized through COSMIC intelligence.</p>
-                    <span class="constellation-badge">Coming Soon</span>
-                </div>
-
-                <div class="constellation-card">
-                    <h3>AEGIS</h3>
-                    <div class="domain">Defense</div>
-                    <p>Security infrastructure and defense coordination with HEIMDALL verification at every layer.</p>
-                    <span class="constellation-badge">Active</span>
-                </div>
+            <div class="col-card">
+                <h3>COSMIC reasons <span class="tag purple">INTELLIGENCE</span></h3>
+                <p>10-engine probabilistic reasoning pipeline. Not autocomplete — causal inference, temporal modeling, adversarial stress testing, and confidence scoring on every output.</p>
+            </div>
+            <div class="col-card">
+                <h3>HEIMDALL verifies <span class="tag green">TRUST</span></h3>
+                <p>SHA-256 attestation chain on every output. Source tiering (T1/T2/T3), trust scores 0-100, provenance manifests. Nothing ships unverified.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Install Section -->
-    <section id="install" class="install-section fade-in">
-        <div class="container">
-            <h2>Get Started</h2>
-            <div class="terminal">
-                <div class="terminal-header">
-                    <div class="terminal-dot"></div>
-                    <div class="terminal-dot"></div>
-                    <div class="terminal-dot"></div>
-                </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">$</span>
-                        <span class="terminal-command">npm install -g omnis-key</span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">$</span>
-                        <span class="terminal-command">omnis-key setup</span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">$</span>
-                        <span class="terminal-command">omnis-key start</span>
-                    </div>
-                    <p class="terminal-comment"># Your agent OS is now running. COSMIC intelligence included.</p>
-                </div>
+<!-- PIPELINE -->
+<section class="pipeline-section fade-in">
+    <div class="container">
+        <div class="section-label">COSMIC Pipeline</div>
+        <h2 class="section-title">Every decision runs through this.</h2>
+        <div class="pipeline-flow">
+            <div class="p-node">METEOR</div><span class="p-arrow">→</span>
+            <div class="p-node">COMET</div><span class="p-arrow">→</span>
+            <div class="p-node">ASTRAL</div><span class="p-arrow">→</span>
+            <div class="p-node">NEBULA</div><span class="p-arrow">→</span>
+            <div class="p-node">QUASAR</div><span class="p-arrow">→</span>
+            <div class="p-node">NOVA</div><span class="p-arrow">→</span>
+            <div class="p-node">ECLIPSE</div><span class="p-arrow">→</span>
+            <div class="p-node">PULSAR</div><span class="p-arrow">→</span>
+            <div class="p-node" style="border-color: var(--accent); color: var(--accent);">AURORA</div>
+        </div>
+        <p class="pipeline-desc">
+            Signal detection → ownership repair → structural normalization → certainty modeling → opportunity scoring → causal inference → temporal reconstruction → adversarial stress → final approval gate. If AURORA doesn't approve it, it doesn't ship.
+        </p>
+    </div>
+</section>
+
+<!-- ENGINES -->
+<section id="engines" class="fade-in">
+    <div class="container">
+        <div class="section-label">Engine Suite</div>
+        <h2 class="section-title">10 engines. Each one does one thing well.</h2>
+        <p class="section-desc">No engine is decorative. Each solves a specific class of problem that LLMs alone cannot.</p>
+        <div class="engine-grid">
+            <div class="engine"><div class="name">METEOR</div><div class="role">Multi-signal correlation & relevance detection</div></div>
+            <div class="engine"><div class="name">COMET</div><div class="role">Ownership chain repair & disambiguation</div></div>
+            <div class="engine"><div class="name">ASTRAL</div><div class="role">Structural normalization & containment</div></div>
+            <div class="engine"><div class="name">NEBULA</div><div class="role">Certainty modeling & confidence bounds</div></div>
+            <div class="engine"><div class="name">QUASAR</div><div class="role">Opportunity scoring & stability tiers</div></div>
+            <div class="engine"><div class="name">NOVA</div><div class="role">Causal inference (not correlation)</div></div>
+            <div class="engine"><div class="name">ECLIPSE</div><div class="role">Historical trend reconstruction</div></div>
+            <div class="engine"><div class="name">PULSAR</div><div class="role">Adversarial stress testing</div></div>
+            <div class="engine"><div class="name">AURORA</div><div class="role">Final approval gate (≥0.80 to ship)</div></div>
+            <div class="engine"><div class="name">CHRONOS</div><div class="role">Temporal state graph & decay curves</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CONSTELLATIONS -->
+<section id="constellations" class="fade-in">
+    <div class="container">
+        <div class="section-label">Domain Packs</div>
+        <h2 class="section-title">Constellations</h2>
+        <p class="section-desc">Vertical intelligence packs. Each constellation is a set of specialized sub-engines tuned for a specific industry.</p>
+        <div class="constellation-grid">
+            <div class="c-card">
+                <h3>POLARIS</h3>
+                <div class="c-domain">Gas · Compression · Pipeline</div>
+                <p>5 sub-engines: CORE, FLUX, RESONANCE, DRIVE, CRYO. Compressor load optimization, gas flow dynamics, cascade failure prediction.</p>
+                <span class="c-status live">LIVE</span>
+            </div>
+            <div class="c-card">
+                <h3>SOLSTICE</h3>
+                <div class="c-domain">Refinery · Logistics · Downstream</div>
+                <p>Crack spread optimization, crude slate recommendations, throughput forecasting, margin intelligence.</p>
+                <span class="c-status live">LIVE</span>
+            </div>
+            <div class="c-card">
+                <h3>GAIA</h3>
+                <div class="c-domain">Food · Water · Agriculture</div>
+                <p>5 sub-engines: HARVEST, DENSITY, RIVER, FRONTIER, PRISM. Food stability scoring, water rights mapping, supply chain resilience.</p>
+                <span class="c-status soon">COMING SOON</span>
+            </div>
+            <div class="c-card">
+                <h3>AEGIS</h3>
+                <div class="c-domain">Defense · Security · Infrastructure</div>
+                <p>SCADA anomaly detection, supply chain interdiction, infrastructure sabotage modeling. ITAR-compliant separation.</p>
+                <span class="c-status live">LIVE</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <p>Built by <strong>JourdanLabs</strong></p>
-        <div class="footer-links">
-            <a href="https://github.com/jourdanlabs/omnis-key" target="_blank">GitHub</a>
-            <a href="https://docs.omniskey.ai" target="_blank">Docs</a>
-            <a href="https://acp.jourdanlabs.com" target="_blank">ACP</a>
+<!-- INSTALL -->
+<section id="install" class="terminal-section fade-in">
+    <div class="container">
+        <div class="section-label">Get Started</div>
+        <h2 class="section-title">Three commands. That's it.</h2>
+        <p class="section-desc">No accounts, no cloud setup, no waiting. Runs on your machine from minute one.</p>
+        <div class="terminal">
+            <div class="terminal-bar">
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+                <div class="terminal-dot"></div>
+            </div>
+            <div class="terminal-body mono">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cmd">npm install -g omnis-key</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cmd">omnis-key setup</span>
+                </div>
+                <div class="terminal-output">✓ COSMIC engines loaded<br>✓ HEIMDALL trust layer active<br>✓ Agent runtime ready</div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cmd">omnis-key start</span>
+                </div>
+                <div class="terminal-output">⚡ OMNIS KEY running on :18800<br>⚡ COSMIC pipeline: 9 engines online<br>⚡ AURORA gate: armed</div>
+                <div class="terminal-comment"># Your intelligent agent runtime is live. No cloud. No API keys. Just reasoning.</div>
+            </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <script>
-        // Copy to clipboard functionality
-        function copyToClipboard(element) {
-            const code = element.querySelector('code');
-            const text = code.textContent;
+<!-- MISSION -->
+<section class="mission fade-in">
+    <blockquote>
+        "AI is going to bring about the largest span of prosperity the world has ever known. I want our products to be beacons of light."
+    </blockquote>
+    <div class="attribution">— <strong>Sokpyeon</strong>, Founder, JourdanLabs</div>
+</section>
 
-            navigator.clipboard.writeText(text).then(() => {
-                element.classList.add('copied');
-                setTimeout(() => {
-                    element.classList.remove('copied');
-                }, 2000);
-            });
-        }
+<!-- FOOTER -->
+<footer>
+    <p>Built by <strong style="color:var(--accent)">JourdanLabs</strong></p>
+    <div class="links">
+        <a href="https://github.com/sokpyeon/omnis-key-sdk">GitHub</a>
+        <a href="https://docs.omniskey.ai">Docs</a>
+        <a href="https://jourdanlabs.com">JourdanLabs</a>
+        <a href="https://cosmic.jourdanlabs.com">COSMIC Demo</a>
+    </div>
+</footer>
 
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+<script>
+function copyCmd(el) {
+    const code = el.querySelector('code');
+    navigator.clipboard.writeText(code.textContent).then(() => {
+        el.style.borderColor = 'var(--green)';
+        code.style.color = 'var(--green)';
+        setTimeout(() => {
+            el.style.borderColor = '';
+            code.style.color = '';
+        }, 1500);
+    });
+}
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+// Intersection Observer for scroll animations
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 
-        // Observe all fade-in elements except hero (which is visible on load)
-        document.querySelectorAll('.fade-in:not(.hero)').forEach(el => {
-            observer.observe(el);
-        });
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
 </body>
 </html>
